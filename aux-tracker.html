@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AUX Tracker · 24/7.ai</title>
+<link rel="shortcut icon" href="https://i.pinimg.com/1200x/cb/16/7a/cb167ae82a34505fa8e2e77e43851e51.jpg" type="image/x-icon">
+<style>
+  :root{
+    --bg: #eef1fa;
+    --card: #ffffff;
+    --border: #e3e8f4;
+    --text: #16213e;
+    --muted: #6b7590;
+    --blue: #2f6bff;
+    --blue-soft: #e8effe;
+    --blue-track: #d7e3fd;
+    --green: #16a34a;
+    --green-soft: #eafaf0;
+    --green-track: #cdeedb;
+    --orange: #f59e0b;
+    --orange-soft: #fdf3e2;
+    --orange-track: #f6e3bd;
+    --purple: #7c5cf5;
+    --purple-soft: #f1eefe;
+    --purple-track: #ddd4fb;
+    --gray-soft: #eef0f6;
+    --gray-track: #dfe3ee;
+    --red: #e0473e;
+    --red-soft: #fdeceb;
+    --shadow: 0 10px 30px -14px rgba(31, 45, 90, 0.18);
+    --radius-lg: 22px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(180deg, #eef2fb 0%, #e9edf9 100%);
+    color: var(--text);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .brand h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .brand .sub {
+    margin-top: 2px;
+    font-size: 13.5px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .ist-badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    min-width: 260px;
+  }
+
+  .flag-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    flex: none;
+    background: conic-gradient(from 90deg, #ff9933 0deg 120deg, #ffffff 120deg 240deg, #138808 240deg 360deg);
+    border: 1px solid #e2e2e2;
+    position: relative;
+  }
+  .flag-dot::after{
+    content:"";
+    position:absolute; inset:0; margin:auto;
+    width:8px; height:8px; border-radius:50%;
+    background: #0b3d91;
+  }
+
+  .ist-lines { display: flex; flex-direction: column; line-height: 1.35; }
+  .ist-top { font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .ist-top .sep { color: #c4cbe0; margin: 0 6px; font-weight: 400; }
+  .ist-bottom { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .live-dot{
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background: var(--green); margin-right:5px; vertical-align:middle;
+    box-shadow: 0 0 0 0 rgba(22,163,74,.6);
+    animation: pulse 1.8s infinite;
+  }
+  .live-dot.offline{ background:#c6ccdd; animation:none; box-shadow:none; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(22,163,74,.45);}
+    70%{ box-shadow:0 0 0 6px rgba(22,163,74,0);}
+    100%{ box-shadow:0 0 0 0 rgba(22,163,74,0);}
+  }
+
+  /* ---------- AUX selector ---------- */
+  .selector-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .selector-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0 0 18px;
+    color: var(--text);
+  }
+  .aux-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .aux-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 13px 20px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    white-space: nowrap;
+  }
+  .aux-btn svg { width: 18px; height: 18px; flex: none; }
+  .aux-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px -10px rgba(31,45,90,.25);
+    border-color: #cfd8ef;
+  }
+  .aux-btn:active { transform: translateY(0); }
+  .aux-btn.active {
+    background: linear-gradient(180deg, #3b74ff, #2f65f0);
+    border-color: #2f65f0;
+    color: #fff;
+    box-shadow: 0 10px 20px -8px rgba(47,107,255,.55);
+  }
+  .aux-btn .check {
+    width: 16px; height: 16px;
+    background: rgba(255,255,255,.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .aux-btn .check svg{ width:10px; height:10px; }
+
+  /* ---------- Current AUX ---------- */
+  .current-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    max-width: 680px;
+    margin: 0 auto 22px;
+    padding: 34px 32px 30px;
+    text-align: center;
+  }
+  .current-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .current-icon {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: var(--blue-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    transition: background .2s ease;
+  }
+  .current-icon svg{ width: 26px; height: 26px; }
+  .current-name {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .current-since {
+    font-size: 13.5px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .current-since .dot { color: var(--green); margin-right: 6px; }
+  .current-timer {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .current-timer.dim { color: #b9c1d9; }
+
+  .banner {
+    max-width: 680px;
+    margin: -6px auto 22px;
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    display: none;
+    box-shadow: var(--shadow);
+    border: 1px solid transparent;
+  }
+  .banner.show { display: block; }
+  .banner.warn {
+    background: var(--orange-soft);
+    border-color: #f3d9a0;
+    color: #92620a;
+  }
+  .banner.success {
+    background: var(--green-soft);
+    border-color: #b7e6c7;
+    color: #157a3c;
+  }
+  .banner strong { display:block; font-size: 14.5px; margin-bottom: 4px; }
+
+  /* ---------- Stat cards ---------- */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .stat-card {
+    border-radius: var(--radius-md);
+    padding: 20px 20px 18px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: box-shadow .2s ease;
+  }
+  .stat-card.login   { background: var(--blue-soft); }
+  .stat-card.lunch   { background: var(--orange-soft); }
+  .stat-card.brk     { background: var(--purple-soft); }
+  .stat-card.floor   { background: var(--gray-soft); }
+
+  .stat-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 14px;
+  }
+  .stat-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #ffffffcc;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .stat-icon svg { width: 16px; height: 16px; }
+  .stat-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-info {
+    margin-left: auto;
+    color: #a8b0c8;
+    cursor: default;
+  }
+
+  .stat-value {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-value .of {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .bar-track {
+    height: 7px;
+    border-radius: 999px;
+    background: var(--gray-track);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .login .bar-track{ background: var(--blue-track); }
+  .lunch .bar-track{ background: var(--orange-track); }
+  .brk .bar-track{ background: var(--purple-track); }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    width: 0%;
+    transition: width .4s ease, background .3s ease;
+    background: var(--blue);
+  }
+  .lunch .bar-fill{ background: var(--orange); }
+  .brk .bar-fill{ background: var(--purple); }
+  .bar-fill.exceeded{ background: var(--red) !important; width: 100% !important; }
+
+  .stat-foot {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .stat-foot.exceeded {
+    color: var(--red);
+  }
+  .stat-foot.done {
+    color: var(--green);
+  }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .footer svg{ width:14px; height:14px; vertical-align: -2px; }
+  .footer .sep{ color:#c4cbe0; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 980px){
+    .stats-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px){
+    .page{ padding: 18px 14px 40px; }
+    .header{ flex-direction: column; }
+    .ist-badge{ width: 100%; min-width: 0; }
+    .current-timer{ font-size: 42px; }
+    .current-card{ padding: 26px 18px 24px; }
+    .aux-btn{ padding: 11px 14px; font-size: 13.5px; }
+    .stats-grid{ grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-value{ font-size: 21px; }
+  }
+  @media (max-width: 420px){
+    .stats-grid{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <h1>AUX Tracker</h1>
+      <div class="sub">24/7.ai</div>
+    </div>
+    <div class="ist-badge">
+      <div class="flag-dot"></div>
+      <div class="ist-lines">
+        <div class="ist-top" id="istTop"><span class="live-dot offline" id="liveDot"></span>Loading IST…</div>
+        <div class="ist-bottom">Bengaluru</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUX selector -->
+  <div class="selector-card">
+    <p class="selector-title">Select Your AUX</p>
+    <div class="aux-row" id="auxRow"></div>
+  </div>
+
+  <!-- Current AUX -->
+  <div class="current-card">
+    <div class="current-label">Current AUX</div>
+    <div class="current-icon" id="currentIcon"></div>
+    <div class="current-name" id="currentName">Offline</div>
+    <div class="current-since" id="currentSince"><span class="dot">●</span>Not logged in</div>
+    <div class="current-timer dim" id="currentTimer">00:00:00</div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card login">
+      <div class="stat-head">
+        <div class="stat-icon" id="iconLogin"></div>
+        <div class="stat-title">Login Hour</div>
+        <div class="stat-info" title="Available + Training + Coaching + Meeting">ⓘ</div>
+      </div>
+      <div class="stat-value"><span id="loginVal">00:00</span> <span class="of">/ 08:00</span></div>
+      <div class="bar-track"><div class="bar-fill" id="loginBar"></div></div>
+      <div class="stat-foot" id="loginFoot">Start Floor: —</div>
+    </div>
+
+    <div class="stat-card lunch">
+      <div class="stat-head">
+        <div class="stat-icon" id="iconLunch"></div>
+        <div class="stat-title">Lunch</div>
+      </div>
+      <div class="stat-value"><span id="lunchVal">00:00</span> <span class="of">/ 00:30</span></div>
+      <div class="bar-track"><div class="bar-fill" id="lunchBar"></div></div>
+      <div class="stat-foot" id="lunchFoot">Max 30 minutes</div>
+    </div>
+
+    <div class="stat-card brk">
+      <div class="stat-head">
+        <div class="stat-icon" id="iconBreak"></div>
+        <div class="stat-title">Break</div>
+      </div>
+      <div class="stat-value"><span id="breakVal">00:00</span> <span class="of">/ 00:30</span></div>
+      <div class="bar-track"><div class="bar-fill" id="breakBar"></div></div>
+      <div class="stat-foot" id="breakFoot">Max 30 minutes</div>
+    </div>
+
+    <div class="stat-card floor">
+      <div class="stat-head">
+        <div class="stat-icon" id="iconFloor"></div>
+        <div class="stat-title">Total Floor Time</div>
+      </div>
+      <div class="stat-value" id="floorVal">00:00</div>
+      <div class="stat-foot" id="floorFoot">Target: 09:00</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span id="footIcon"></span> Stay on Track <span class="sep">•</span> Hit Your Targets <span class="sep">•</span> Great Job!
+  </div>
+
+</div>
+
+<script>
+/* ============================= ICONS ============================= */
+const ICONS = {
+  available: `<path d="M4 4h16v12H8l-4 4V4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="8.5" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="10" r="1" fill="currentColor"/><circle cx="15.5" cy="10" r="1" fill="currentColor"/>`,
+  meeting: `<circle cx="8.5" cy="8" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="9" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M14.5 14.3c2.6.3 4.5 2.1 4.5 4.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
+  training: `<path d="M2 8l10-4 10 4-10 4-10-4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 10.5V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M22 8v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
+  coaching: `<circle cx="12" cy="7.5" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c0-4.1 3.4-6.5 7.5-6.5s7.5 2.4 7.5 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
+  break: `<path d="M4 8h11v5a5 5 0 0 1-5 5H8a4 4 0 0 1-4-4V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 9.5h1.5a2.5 2.5 0 0 1 0 5H15" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 4.5c0 1-1 1-1 2M10.5 4.5c0 1-1 1-1 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`,
+  lunch: `<path d="M6 3v7a2 2 0 0 0 2 2v9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 3v7M9 3v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 3c-1.7 0-3 2-3 5s1.3 5 3 5v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  notready: `<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  offline: `<path d="M12 3v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
+  check: `<path d="M2 6l3 3 5-6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+  clock: `<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  briefcase: `<rect x="3" y="7" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7" fill="none" stroke="currentColor" stroke-width="1.8"/>`,
+  calendar: `<rect x="3.5" y="4.5" width="17" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
+  rocket: `<path d="M12 2c3 1 5.5 4.5 5 9-1 1-2 2-3 2.5-1.5-.2-3.2-1.7-3.5-3.5C10 6 9.5 3.5 12 2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 14c-2 0-4 1-5 4 3 1 5-1 5-1M15 14c2 0 4 1 5 4-3 1-5-1-5-1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9" r="1.3" fill="currentColor"/>`
+};
+function svg(name, extra=''){
+  return `<svg viewBox="0 0 24 24" ${extra}>${ICONS[name]}</svg>`;
+}
+
+/* ============================= AUX CONFIG ============================= */
+const AUX_LIST = [
+  { key: 'Available', icon: 'available', color: '#2f6bff' },
+  { key: 'Meeting',   icon: 'meeting',   color: '#2f6bff' },
+  { key: 'Training',  icon: 'training',  color: '#2f6bff' },
+  { key: 'Coaching',  icon: 'coaching',  color: '#2f6bff' },
+  { key: 'On Break',  icon: 'break',     color: '#7c5cf5' },
+  { key: 'Lunch',     icon: 'lunch',     color: '#f59e0b' },
+  { key: 'Not Ready', icon: 'notready',  color: '#94a0bf' },
+  { key: 'Offline',   icon: 'offline',   color: '#6b7590' },
+];
+const LOGIN_STATES = new Set(['Available', 'Training', 'Coaching', 'Meeting']);
+
+const LOGIN_TARGET = 8 * 3600 * 1000;
+const LUNCH_TARGET = 30 * 60 * 1000;
+const BREAK_TARGET = 30 * 60 * 1000;
+const FLOOR_TARGET = 9 * 3600 * 1000;
+
+/* ============================= STATE ============================= */
+const STORAGE_KEY = 'auxTrackerState_v1';
+
+const DEFAULT_STATE = {
+  currentAux: 'Offline',
+  currentAuxSince: null,   // epoch ms (IST-synced)
+  isLoggedIn: false,
+  loginAccum: 0,
+  lunchAccum: 0,
+  breakAccum: 0,
+  floorAccum: 0,
+  floorStartTime: null,    // first login-of-day time
+  lastTick: null,
+  savedAtLocal: null,      // Date.now() at save time, used only to sanity-check storage age
+};
+
+let state = { ...DEFAULT_STATE };
+
+/* ---------- Persistence: save/load state so a refresh never loses progress ---------- */
+function saveState(){
+  try {
+    const toSave = { ...state, savedAtLocal: Date.now() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  } catch (e) {
+    // localStorage may be unavailable (private mode, quota, etc.) — fail silently, app still works in-session
+    console.warn('AUX Tracker: could not save state', e);
+  }
+}
+
+function loadState(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // basic shape check so corrupted/old data doesn't break the app
+    if (typeof parsed !== 'object' || parsed === null) return null;
+    return { ...DEFAULT_STATE, ...parsed };
+  } catch (e) {
+    console.warn('AUX Tracker: could not load saved state', e);
+    return null;
+  }
+}
+
+function clearSavedState(){
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+}
+
+/* ============================= IST TIME SOURCE ============================= */
+let istOffset = null;        // (serverEpochMs - performance.now()) so we can derive "now" any time
+let usingFallback = false;
+
+function nowIST(){
+  if (istOffset === null) return Date.now();
+  return istOffset + performance.now();
+}
+
+async function syncTime(){
+  // Try worldtimeapi first, then timeapi.io, then local fallback
+  try {
+    const r = await fetchWithTimeout('https://worldtimeapi.org/api/timezone/Asia/Kolkata', 5000);
+    const d = await r.json();
+    if (d && d.unixtime) {
+      istOffset = (d.unixtime * 1000) - performance.now();
+      usingFallback = false;
+      return true;
+    }
+    throw new Error('bad payload');
+  } catch (e1) {
+    try {
+      const r2 = await fetchWithTimeout('https://timeapi.io/api/time/current/zone?timeZone=Asia%2FKolkata', 5000);
+      const d2 = await r2.json();
+      if (d2 && d2.dateTime) {
+        const t = Date.parse(d2.dateTime + (d2.dateTime.endsWith('Z') ? '' : ''));
+        if (!isNaN(t)) {
+          istOffset = t - performance.now();
+          usingFallback = false;
+          return true;
+        }
+      }
+      throw new Error('bad payload 2');
+    } catch (e2) {
+      // Fallback: derive IST from local clock using Intl (does not rely on system TZ setting)
+      const localNow = Date.now();
+      const istString = new Date(localNow).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+      const parsed = new Date(istString);
+      // difference between what local Date() reports as IST-labelled wall time vs actual epoch
+      const approxIST = localNow + (parsed.getTime() - new Date(localNow).setSeconds(0,0) + new Date(localNow).setSeconds(0,0) - localNow);
+      istOffset = localNow - performance.now();
+      usingFallback = true;
+      return false;
+    }
+  }
+}
+
+function fetchWithTimeout(url, ms){
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(id));
+}
+
+const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function renderClock(){
+  const t = usingFallback
+    ? new Date(new Date(nowIST()).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+    : new Date(nowIST());
+
+  const day = WEEKDAYS[t.getDay()];
+  const date = t.getDate();
+  const month = MONTHS[t.getMonth()];
+  const year = t.getFullYear();
+  let h = t.getHours();
+  const m = pad2(t.getMinutes());
+  const s = pad2(t.getSeconds());
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if (h === 0) h = 12;
+
+  const dot = document.getElementById('liveDot');
+  dot.className = 'live-dot' + (state.isLoggedIn ? '' : ' offline');
+
+  document.getElementById('istTop').innerHTML =
+    `<span class="live-dot${state.isLoggedIn ? '' : ' offline'}"></span>` +
+    `${day}, ${date} ${month} ${year} <span class="sep">|</span> ${pad2(h)}:${m}:${s} ${ampm} IST`;
+}
+
+/* ============================= HELPERS ============================= */
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+function fmtHMS(ms){
+  ms = Math.max(0, ms);
+  const totalSec = Math.floor(ms/1000);
+  const h = Math.floor(totalSec/3600);
+  const m = Math.floor((totalSec%3600)/60);
+  const s = totalSec%60;
+  return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+}
+function fmtHM(ms){
+  ms = Math.max(0, ms);
+  const totalMin = Math.floor(ms/60000);
+  const h = Math.floor(totalMin/60);
+  const m = totalMin%60;
+  return `${pad2(h)}:${pad2(m)}`;
+}
+function fmtTime12(ts){
+  const t = usingFallback
+    ? new Date(new Date(ts).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+    : new Date(ts);
+  let h = t.getHours();
+  const m = pad2(t.getMinutes());
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12; if (h === 0) h = 12;
+  return `${pad2(h)}:${m} ${ampm}`;
+}
+function auxCfg(key){ return AUX_LIST.find(a => a.key === key); }
+
+/* ============================= RENDER: AUX BUTTONS ============================= */
+const auxRow = document.getElementById('auxRow');
+AUX_LIST.forEach(a => {
+  const btn = document.createElement('button');
+  btn.className = 'aux-btn';
+  btn.dataset.key = a.key;
+  btn.innerHTML = `${svg(a.icon)}<span>${a.key}</span>`;
+  btn.addEventListener('click', () => selectAux(a.key));
+  auxRow.appendChild(btn);
+});
+
+function refreshButtons(){
+  document.querySelectorAll('.aux-btn').forEach(btn => {
+    const active = btn.dataset.key === state.currentAux;
+    btn.classList.toggle('active', active);
+    const label = btn.querySelector('span');
+    if (active) {
+      if (!btn.querySelector('.check')) {
+        const chk = document.createElement('span');
+        chk.className = 'check';
+        chk.innerHTML = svg('check');
+        btn.appendChild(chk);
+      }
+    } else {
+      const chk = btn.querySelector('.check');
+      if (chk) chk.remove();
+    }
+  });
+}
+
+/* ============================= BANNER ============================= */
+function showBanner(type, html){
+  const b = document.getElementById('banner');
+  b.className = 'banner show ' + type;
+  b.innerHTML = html;
+}
+function hideBanner(){
+  const b = document.getElementById('banner');
+  b.className = 'banner';
+  b.innerHTML = '';
+}
+
+/* ============================= CORE LOGIC ============================= */
+function selectAux(key){
+  if (key === state.currentAux) return;
+  const now = nowIST();
+
+  // First-ever login: switching away from initial Offline state
+  if (!state.isLoggedIn && key !== 'Offline') {
+    state.isLoggedIn = true;
+    state.floorStartTime = now;
+  }
+
+  if (key === 'Offline') {
+    const remainingLogin = Math.max(0, LOGIN_TARGET - state.loginAccum);
+    const remainingFloor = Math.max(0, FLOOR_TARGET - state.floorAccum);
+
+    if (state.isLoggedIn && (remainingLogin > 0 || remainingFloor > 0)) {
+      let lines = '<strong>Shift not complete yet</strong>You still need:';
+      const parts = [];
+      if (remainingLogin > 0) parts.push(`Login Hours — ${fmtHMS(remainingLogin)} more`);
+      if (remainingFloor > 0) parts.push(`Total Floor Time — ${fmtHMS(remainingFloor)} more`);
+      lines = `<strong>Shift not complete yet</strong>You still need ${parts.join(' and ')} to hit today's targets.`;
+      showBanner('warn', lines);
+      // Go offline but keep all accumulated progress intact (paused, not reset)
+      state.currentAux = 'Offline';
+      state.currentAuxSince = now;
+      state.lastTick = now;
+    } else if (state.isLoggedIn) {
+      // Targets met — close out the shift and reset everything to zero
+      showBanner('success', `<strong>Shift complete — great job!</strong>All targets hit. Your counters have been reset for a new shift.`);
+      resetDay();
+      state.currentAux = 'Offline';
+      state.currentAuxSince = null;
+      state.isLoggedIn = false;
+      state.lastTick = null;
+    } else {
+      // Was already offline / never logged in
+      state.currentAux = 'Offline';
+      state.currentAuxSince = null;
+      state.lastTick = null;
+    }
+  } else {
+    hideBanner();
+    state.currentAux = key;
+    state.currentAuxSince = now;
+    state.lastTick = now;
+  }
+
+  render();
+  saveState();
+}
+
+function resetDay(){
+  state.loginAccum = 0;
+  state.lunchAccum = 0;
+  state.breakAccum = 0;
+  state.floorAccum = 0;
+  state.floorStartTime = null;
+  clearSavedState();
+}
+
+function tick(){
+  const now = nowIST();
+
+  if (state.isLoggedIn && state.currentAux !== 'Offline' && state.lastTick !== null) {
+    const delta = now - state.lastTick;
+    if (delta > 0) {
+      state.floorAccum += delta;
+      if (LOGIN_STATES.has(state.currentAux)) state.loginAccum += delta;
+      if (state.currentAux === 'Lunch') state.lunchAccum += delta;
+      if (state.currentAux === 'On Break') state.breakAccum += delta;
+    }
+  }
+  state.lastTick = now;
+
+  render();
+  renderClock();
+  saveState();
+}
+
+/* ============================= RENDER ============================= */
+function render(){
+  refreshButtons();
+
+  // Current AUX card
+  const cfg = auxCfg(state.currentAux);
+  document.getElementById('currentIcon').innerHTML = svg(cfg.icon, `style="color:${cfg.color}"`);
+  document.getElementById('currentIcon').style.background = state.currentAux === 'Offline' ? '#eef0f6' : hexSoft(cfg.color);
+  document.getElementById('currentName').textContent = state.currentAux;
+
+  const sinceEl = document.getElementById('currentSince');
+  const timerEl = document.getElementById('currentTimer');
+  const isOffline = state.currentAux === 'Offline';
+
+  if (isOffline) {
+    // Offline = stopped. The clock does not run at all while offline, it just sits at 00:00:00.
+    if (state.currentAuxSince) {
+      sinceEl.innerHTML = `<span class="dot" style="color:#c6ccdd">●</span>Paused since ${fmtTime12(state.currentAuxSince)}`;
+    } else {
+      sinceEl.innerHTML = `<span class="dot" style="color:#c6ccdd">●</span>Not logged in yet`;
+    }
+    timerEl.textContent = '00:00:00';
+    timerEl.classList.add('dim');
+  } else if (state.currentAuxSince) {
+    sinceEl.innerHTML = `<span class="dot" style="color:#16a34a">●</span>Active since ${fmtTime12(state.currentAuxSince)}`;
+    const elapsed = nowIST() - state.currentAuxSince;
+    timerEl.textContent = fmtHMS(elapsed);
+    timerEl.classList.remove('dim');
+  } else {
+    sinceEl.innerHTML = `<span class="dot" style="color:#c6ccdd">●</span>Not logged in yet`;
+    timerEl.textContent = '00:00:00';
+    timerEl.classList.add('dim');
+  }
+
+  // Login Hour
+  setStat('login', state.loginAccum, LOGIN_TARGET, fmtHM, false);
+  document.getElementById('loginFoot').textContent = state.floorStartTime
+    ? `Start Floor: ${fmtTime12(state.floorStartTime)}`
+    : 'Start Floor: —';
+  document.getElementById('loginFoot').className = 'stat-foot' + (state.loginAccum >= LOGIN_TARGET ? ' done' : '');
+
+  // Lunch (hard cap w/ exceed messaging)
+  renderCapStat('lunch', state.lunchAccum, LUNCH_TARGET, 'Max 30 minutes');
+
+  // Break (hard cap w/ exceed messaging)
+  renderCapStat('break', state.breakAccum, BREAK_TARGET, 'Max 30 minutes');
+
+  // Total Floor Time
+  document.getElementById('floorVal').textContent = fmtHM(state.floorAccum);
+  const floorFoot = document.getElementById('floorFoot');
+  if (state.floorAccum >= FLOOR_TARGET) {
+    floorFoot.textContent = 'Target reached ✓';
+    floorFoot.className = 'stat-foot done';
+  } else {
+    floorFoot.textContent = 'Target: 09:00';
+    floorFoot.className = 'stat-foot';
+  }
+}
+
+function setStat(prefix, value, target, fmt, isCap){
+  document.getElementById(prefix + 'Val').textContent = fmt(value);
+  const pct = Math.min(100, (value/target)*100);
+  document.getElementById(prefix + 'Bar').style.width = pct + '%';
+}
+
+function renderCapStat(prefix, value, target, normalLabel){
+  document.getElementById(prefix + 'Val').textContent = fmtHM(value);
+  const bar = document.getElementById(prefix + 'Bar');
+  const foot = document.getElementById(prefix + 'Foot');
+  if (value > target) {
+    bar.classList.add('exceeded');
+    foot.textContent = `Exceeded by ${fmtHMS(value - target)}`;
+    foot.className = 'stat-foot exceeded';
+  } else {
+    bar.classList.remove('exceeded');
+    bar.style.width = Math.min(100, (value/target)*100) + '%';
+    foot.textContent = normalLabel;
+    foot.className = 'stat-foot';
+  }
+}
+
+function hexSoft(hex){
+  // returns a light tint background for the given accent color
+  const map = {
+    '#2f6bff': '#e8effe',
+    '#7c5cf5': '#f1eefe',
+    '#f59e0b': '#fdf3e2',
+    '#94a0bf': '#eef0f6',
+    '#6b7590': '#eef0f6',
+  };
+  return map[hex] || '#eef0f6';
+}
+
+/* ============================= ICON SLOTS ============================= */
+document.getElementById('iconLogin').innerHTML = svg('clock', 'style="color:#2f6bff"');
+document.getElementById('iconLunch').innerHTML = svg('lunch', 'style="color:#f59e0b"');
+document.getElementById('iconBreak').innerHTML = svg('break', 'style="color:#7c5cf5"');
+document.getElementById('iconFloor').innerHTML = svg('calendar', 'style="color:#6b7590"');
+document.getElementById('footIcon').innerHTML = svg('rocket', 'style="color:#94a0bf"');
+
+/* ============================= INIT ============================= */
+async function init(){
+  await syncTime();
+
+  // Restore whatever was saved in the browser (if anything) so a refresh never loses progress
+  const saved = loadState();
+  if (saved) {
+    state = saved;
+
+    // If the tab was closed/refreshed while actively on a non-Offline status, credit the
+    // elapsed real-world time (using the synced IST clock, not the device clock) to the
+    // right buckets before we resume ticking — otherwise that gap would be lost.
+    if (state.isLoggedIn && state.currentAux !== 'Offline' && state.lastTick) {
+      const gap = nowIST() - state.lastTick;
+      if (gap > 0) {
+        state.floorAccum += gap;
+        if (LOGIN_STATES.has(state.currentAux)) state.loginAccum += gap;
+        if (state.currentAux === 'Lunch') state.lunchAccum += gap;
+        if (state.currentAux === 'On Break') state.breakAccum += gap;
+      }
+    }
+    state.lastTick = nowIST();
+    saveState();
+  }
+
+  render();
+  renderClock();
+  setInterval(tick, 1000);
+  // Resync with the time server periodically to correct drift
+  setInterval(syncTime, 5 * 60 * 1000);
+}
+init();
+</script>
+</body>
+</html>
